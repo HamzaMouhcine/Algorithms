@@ -55,7 +55,7 @@ public class Main {
 
     // use : initialize s (source) and t (sink) and call this function, it modifies the edges when used.
     // multiple tcs : initialize s and t and cntEdges each testcase.
-    // time complexity : O(m*n^2);
+    // time complexity : O(m*n^2) on normal graphs, and O(m*sqrt(n) in maximum bipartite matching;
     // returns : the max flow.
     static long flow() {
         long f = 0;
