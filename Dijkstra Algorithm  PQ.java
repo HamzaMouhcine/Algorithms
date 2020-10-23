@@ -67,19 +67,18 @@ public class Main {
 
             dist[s]=0;
             while(q.size()>0){
-                int element = q.remove().dest;
+		Edge edge = q.remove();
+		int element = edge.to;
+		if (edge.weight > dist[edge.to]) continue;
+
                 for(Edge e:adj[element]){
 
                         if(dist[element]+e.weight<dist[e.to]){
                             dist[e.to] = dist[element]+e.weight;
-                            q.add(e);
+                            q.add(new Edge(e.to, dist[e.to]));
                         }
 
                 }
-                //for(int i=0;i<list.size() ;i++) System.out.print(list.get(i)+" ");
-                //System.out.print(" -->"+element);
-
-                //System.out.println();
             }
             return mind(dist,friends);
         }
