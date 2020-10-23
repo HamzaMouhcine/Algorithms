@@ -70,8 +70,8 @@ public class Main {
                 int element = q.remove().dest;
                 for(Edge e:adj[element]){
 
-                        if(dist[element]+e.weight<dist[e.dest]){
-                            dist[e.dest] = dist[element]+e.weight;
+                        if(dist[element]+e.weight<dist[e.to]){
+                            dist[e.to] = dist[element]+e.weight;
                             q.add(e);
                         }
 
@@ -94,11 +94,11 @@ public class Main {
         }
         
         private static class Edge implements Comparable<Edge>{
-            int dest;
+            int to;
             int weight;
     
-                public Edge(int dest, int weight) {
-                    this.dest = dest;
+                public Edge(int to, int weight) {
+                    this.to = to;
                     this.weight = weight;
                 }
     
@@ -110,7 +110,7 @@ public class Main {
     
                 @Override
                 public String toString() {
-                    return "("+this.dest+", "+this.weight+")";
+                    return "("+this.to+", "+this.weight+")";
                 }
         }
 }
