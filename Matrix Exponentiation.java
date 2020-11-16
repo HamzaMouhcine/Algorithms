@@ -19,86 +19,74 @@ public class Main {
     static int mod=(int)1e9+7 ;
     static int m,k,t,q,x,a,b,y,d;
     static long n;
-    
-    static long mat[][];
-    static long stat[][];
+
     void solve(PrintWriter out, Reader in) throws IOException{
-        n = in.nextLong();
-        m = in.nextInt();
-        k = in.nextInt();
-        mat = new long[m][m];
-        for(int i=0;i<m;i++)
-            for(int j=0;j<m;j++)
-                mat[i][j] = 1;
-        
-        Map<Character,Integer> map = new HashMap<Character,Integer>();
-        for(int i=0;i<26;i++){
-            map.put((char)(i+'a'),i);
-            map.put((char)(i+'A'),i+26);
-        }
-        
-        String str = "";
-        for(int i=0;i<k;i++){
-            str = in.next();
-            
-            mat[map.get(str.charAt(1))][map.get(str.charAt(0))] = 0;
-        }
-        
-        stat = new long[m][m];
-        for(int i=0;i<m;i++)
-            for(int j=0;j<m;j++)
-                stat[i][j] = mat[i][j];
-        
-        
-        if(n==1) out.println(m);
-        else out.println(matpow(mat,n-1));
+	
     }
     
     //<>
     
     
-    static long matpow(long[][] mat,long p){
-        
-        
-        
-        long ans = 0;
-        if(p==1){
-            for(int i=0;i<m;i++)
-                for(int j=0;j<m;j++)
-                    ans = (ans+mat[i][j])%mod;
-            return ans;
-        }else if(p==0) return 0;
-        
-        matpow(mat,p/2);
-        matmul(mat,mat);
-        
-        if(p%2==1){
-            matmul(mat,stat);
+    static int add(int x, int y) {
+        x += y;
+        if(x >= Mod) {
+            x -= Mod;
         }
-        
-        for(int i=0;i<m;i++)
-            for(int j=0;j<m;j++)
-            ans = (ans+mat[i][j])%mod;
-        return ans;
+        return x;
     }
-    
-    static void matmul(long[][] ma,long[][] mb){
-        long[][] c = new long[m][m];
-        
-        for(int i=0;i<m;i++){
-            for(int j=0;j<m;j++){
-                for(int k=0;k<m;k++){
-                    c[i][j] = ((ma[i][k]*mb[k][j])%mod+c[i][j])%mod;
+
+    static int sub(int x, int y) {
+        x -= y;
+        if(x < 0) {
+            x += Mod;
+        }
+        return x;
+    }
+
+    static int mul(int x, int y) {
+        long result = (long) x * y % Mod;
+        return (int) result;
+    }
+
+    static int[][] Ident(int n) {
+        int[][] result = new int[n][n];
+        for(int i = 0; i < n; i++) {
+            result[i][i] = 1;
+        }
+        return result;
+    }
+
+    static int[][] Multy(int[][] a, int[][] b) {
+        int na = a.length, ma = a[0].length;
+        int nb = b.length, mb = b[0].length;
+        assert ma == nb;
+        int[][] c = new int[na][mb];
+        for(int i = 0; i < na; i++) {
+            for(int j = 0; j < mb; j++) {
+                for(int k = 0; k < nb; k++) {
+                    c[i][j] = add(c[i][j], mul(a[i][k], b[k][j]));
                 }
             }
         }
-        
-        for(int i=0;i<m;i++){
-            for(int j=0;j<m;j++){
-                ma[i][j] = c[i][j];
+        return c;
+    }
+
+    static int[][] Power(int[][] a, long k) {
+        int n = a.length;
+        int[][] b = new int[n][n];
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                b[i][j] = a[i][j];
             }
         }
-        return;
+        int[][] result = Ident(n);
+        for( ; k > 0; k >>= 1) {
+            if (k % 2 == 1) {
+                result = Multy(result, b);
+            }
+            b = Multy(b, b);
+        }
+        return result;
     }
     
     static class Reader {
