@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.math.*;
 
-public class SCC {
+public class Scc {
     static final int MOD = 1000000007 ;
     static int nodes;
     static int edges;
@@ -16,7 +16,7 @@ public class SCC {
     public static void main(String[] args) throws IOException {
         PrintWriter out = new PrintWriter(System.out);
         Reader in = new Reader();
-        SCC solver = new SCC();
+        Scc solver = new Scc();
         solver.solve(out, in);
         out.flush();
         out.close();
