@@ -3,126 +3,128 @@ import java.io.*;
 import java.math.*;
 import java.text.*;
 
-public class Main {
+public class SegTree {
     static PrintWriter out;
     static Reader in;
+    static int nodes;
+
     public static void main(String[] args) throws IOException {
-        input_output();
-        //out = new PrintWriter(System.out);
-        //in = new Reader(new FileInputStream("card.in"));
-        Main solver = new Main();
+        initInputOutput();
+        SegTree solver = new SegTree();
         solver.solve();
-        out.close(); 
-        out.flush(); 
+        out.close();
+        out.flush();
     }
 
-    static long INF = (long)1e18;
-    static int maxn = (int)1e7;
-    static int mod = (int)1e9+7;
-    static int n, m, q, t, k;
-    static double pi = 3.141592653589;
+    void solve() throws IOException {
+        nodes = in.nextInt();
 
-    void solve() throws IOException{
-    	n = in.nextInt();
+        int[] arr = new int[nodes];
+        for (int i = 0; i < nodes; i++) arr[i] = in.nextInt();
 
-    	int[] arr = new int[n];
-    	for (int i = 0; i < n; i++) arr[i] = in.nextInt();
+        SegTree st = new SegTree(0, nodes - 1, arr);
+    }
 
-    	SegTree st = new SegTree(0, n-1, arr);
-   	}
-
-    //<>
-
-   	static class SegTree {
+    static class SegTree {
         int leftmost, rightmost;
         SegTree lChild, rChild;
         long value;
         long toProp;
 
         public SegTree(int leftmost, int rightmost, int[] a) {
-            this.leftmost=leftmost;
-            this.rightmost=rightmost;
-            if (leftmost!=rightmost) {
-                int mid=(leftmost+rightmost)/2;
-                lChild=new SegTree(leftmost, mid, a);
-                rChild=new SegTree(mid+1, rightmost, a);
+            this.leftmost = leftmost;
+            this.rightmost = rightmost;
+            if (leftmost != rightmost) {
+                int mid = (leftmost + rightmost) / 2;
+                lChild = new SegTree(leftmost, mid, a);
+                rChild = new SegTree(mid + 1, rightmost, a);
                 recalc();
             } else init_leaf(a[leftmost]);
         }
-        
+
         public void init_leaf(int val) {
-        	value = val;
+            value = val;
         }
 
         public void recalc() {
             value = Math.min(lChild.value, rChild.value);
         }
-        
-        public void prop() {
-        	if (toProp == 0) return;
 
-        	value += toProp;
-            if (leftmost!=rightmost) {
+        public void prop() {
+            if (toProp == 0) {
+                return;
+            }
+
+            value += toProp;
+            if (leftmost != rightmost) {
                 lChild.toProp += toProp;
                 rChild.toProp += toProp;
             }
-            toProp=0;
+            toProp = 0;
         }
 
         public void pointUpdate(int position, int newValue) {
-            if (leftmost==rightmost) {
-                value=newValue;
+            if (leftmost == rightmost) {
+                value = newValue;
                 return;
             }
-            if (position<=lChild.rightmost)
+
+            if (position <= lChild.rightmost) {
                 lChild.pointUpdate(position, newValue);
-            else
+            } else {
                 rChild.pointUpdate(position, newValue);
+            }
             recalc();
         }
 
         public void update(int l, int r, int v) {
             if (l <= leftmost && rightmost <= r) {
-            	toProp += v;
+                toProp += v;
                 prop();
                 return;
             }
             prop();
-            if (l>rightmost || r<leftmost) return;
+            if (l > rightmost || r < leftmost) {
+                return;
+            }
             lChild.update(l, r, v);
             rChild.update(l, r, v);
             recalc();
         }
 
         public long query(int l, int r) {
-        	prop();
-            if (l <= leftmost && rightmost <= r) return value;
-            if (l > rightmost || r < leftmost) return INF;
+            prop();
+            if (l <= leftmost && rightmost <= r) {
+                return value;
+            }
+            if (l > rightmost || r < leftmost) {
+                return INF;
+            }
 
-			return Math.min(lChild.query(l, r), rChild.query(l, r));
+            return Math.min(lChild.query(l, r), rChild.query(l, r));
         }
     }
 
     static class Reader {
- 
+
         private InputStream mIs;
         private byte[] buf = new byte[1024];
         private int curChar;
         private int numChars;
-    
+
         public Reader() {
             this(System.in);
         }
-    
+
         public Reader(InputStream is) {
             mIs = is;
         }
-    
+
         public int read() {
             if (numChars == -1) {
                 throw new InputMismatchException();
-    
-        }
+
+            }
             if (curChar >= numChars) {
                 curChar = 0;
                 try {
@@ -136,7 +138,7 @@ public class Main {
             }
             return buf[curChar++];
         }
-    
+
         public String nextLine() {
             int c = read();
             while (isSpaceChar(c)) {
@@ -149,7 +151,7 @@ public class Main {
             } while (!isEndOfLine(c));
             return res.toString();
         }
-    
+
         public String next() {
             int c = read();
             while (isSpaceChar(c)) {
@@ -162,12 +164,11 @@ public class Main {
             } while (!isSpaceChar(c));
             return res.toString();
         }
-    
-        double nextDouble()
-        {
+
+        double nextDouble() {
             return Double.parseDouble(next());
         }
-    
+
         public long nextLong() {
             int c = read();
             while (isSpaceChar(c)) {
@@ -189,7 +190,7 @@ public class Main {
             } while (!isSpaceChar(c));
             return res * sgn;
         }
-    
+
         public int nextInt() {
             int c = read();
             while (isSpaceChar(c)) {
@@ -211,24 +212,31 @@ public class Main {
             } while (!isSpaceChar(c));
             return res * sgn;
         }
-    
+
         public boolean isSpaceChar(int c) {
             return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
         }
-    
+
         public boolean isEndOfLine(int c) {
             return c == '\n' || c == '\r' || c == -1;
         }
- 
+
     }
-    static void input_output() throws IOException {
+    static void initInputOutput() throws IOException {
+        // input
         File f = new File("in.txt");
-        if(f.exists() && !f.isDirectory()) { 
+        if (f.exists() && !f.isDirectory()) {
             in = new Reader(new FileInputStream("in.txt"));
-        } else in = new Reader();
+        } else {
+            in = new Reader();
+        }
+
+        // output
         f = new File("out.txt");
-        if(f.exists() && !f.isDirectory()) {
+        if (f.exists() && !f.isDirectory()) {
             out = new PrintWriter(new File("out.txt"));
-        } else out = new PrintWriter(System.out);
+        } else {
+            out = new PrintWriter(System.out);
+        }
     }
 }
