@@ -7,7 +7,7 @@ static class Hash implements Comparable<Hash> {
     static boolean precomped = false;
     static Random rnd = new Random();
 
-    void add(int o) {
+    void add(int o) { 
         v1 = (v1 * s1 + o) % m1;
         v2 = (v2 * s2 + o) % m2;
         l++;
